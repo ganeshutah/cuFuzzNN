@@ -1,0 +1,8 @@
+version = "1.0"
+# if you are not adding excluded directories then remove [oss.excluded] and [[oss.excluded.directories]] both tag from file.
+[oss.excluded]
+# Filter out all packages in following paths for all programs using this source code location
+[[oss.excluded.directories]]
+paths = ['Tools/AFLplusplus/']
+comment = 'tools packages'
+

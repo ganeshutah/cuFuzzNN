@@ -1,0 +1,166 @@
+diff --git a/include/asanfuzz.h b/include/asanfuzz.h
+index 693a12b3..320a4b85 100644
+--- a/include/asanfuzz.h
++++ b/include/asanfuzz.h
+@@ -39,6 +39,7 @@ enum SanitizerAbstraction {
+ 
+   SIMPLIFY_TRACE = 0,  // Feed all unique trace to sanitizers, the
+                        // most sensitive
++  ALL_TRACE, // Feed all traces to sanitizers!
+   UNIQUE_TRACE,
+   COVERAGE_INCREASE  // Feed all coverage increasing cases to sanitizers, the
+                      // least sensitive
+diff --git a/src/afl-forkserver.c b/src/afl-forkserver.c
+index 328f818d..f9f95e31 100644
+--- a/src/afl-forkserver.c
++++ b/src/afl-forkserver.c
+@@ -1117,6 +1117,16 @@ void afl_fsrv_start(afl_forkserver_t *fsrv, char **argv,
+ 
+         if (!fsrv->map_size) { fsrv->map_size = MAP_SIZE; }
+ 
++        // CUFUZZ: Force the map size to a bigger size to include device coverage info
++        if(1){    
++          char *ptr;
++          //if ((ptr = getenv("AFL_MAP_SIZE")) || (ptr = getenv("AFL_MAPSIZE"))) {
++          if ((ptr = getenv("CUFUZZ_MAP_SIZE"))) {
++            tmp_map_size = atoi(ptr);
++            ACTF("cufuzz: tmp_map_size %u", tmp_map_size);
++          }
++        }
++
+         fsrv->real_map_size = tmp_map_size;
+ 
+         if (tmp_map_size % 64) {
+@@ -1334,6 +1344,15 @@ void afl_fsrv_start(afl_forkserver_t *fsrv, char **argv,
+ 
+           if (!fsrv->map_size) { fsrv->map_size = MAP_SIZE; }
+ 
++          // CUFUZZ: Force the map size to a bigger size to include device coverage info
++          if(1){    
++            char *ptr;
++            //if ((ptr = getenv("AFL_MAP_SIZE")) || (ptr = getenv("AFL_MAPSIZE"))) {
++            if ((ptr = getenv("CUFUZZ_MAP_SIZE"))) {
++              tmp_map_size = atoi(ptr);
++            }
++          }
++
+           fsrv->real_map_size = tmp_map_size;
+ 
+           if (tmp_map_size % 64) {
+diff --git a/src/afl-fuzz-bitmap.c b/src/afl-fuzz-bitmap.c
+index 19cdf511..7e2508e8 100644
+--- a/src/afl-fuzz-bitmap.c
++++ b/src/afl-fuzz-bitmap.c
+@@ -32,6 +32,18 @@
+   #define NAME_MAX _XOPEN_NAME_MAX
+ #endif
+ 
++// CUFUZZ: printing the set bytes in the coverage map for debugging 
++void print_map_bytes(void *coverage_array, uint32_t size) {
++    uint8_t *ptr = (uint8_t *)coverage_array;
++    fprintf(stderr, "CUFUZZ_COV: AFL: Size: %d\n", size);
++    for (uint32_t i = 0; i < size; i++) {
++        if (ptr[i] != 0) {
++            fprintf(stderr, "CUFUZZ_COV: AFL: Byte[%d]: %02X\n", i, ptr[i]);
++        }
++    }
++}
++
++
+ /* Write bitmap to file. The bitmap is useful mostly for the secret
+    -B option, to focus a separate fuzzing session on a particular
+    interesting input without rediscovering all the others. */
+@@ -532,7 +544,11 @@ u8 __attribute__((hot)) save_if_interesting(afl_state_t *afl, void *mem,
+ 
+   /* Only "normal" inputs seem interested to us */
+   if (likely(fault == afl->crash_mode)) {
+-
++    if (afl->debug) {
++      fprintf(stderr, "CUFUZZ: AFL: save_if_interesting: printing afl->fsrv.trace_bits\n"); 
++      print_map_bytes(afl->fsrv.trace_bits, afl->fsrv.map_size);
++    }
++     
+     if (unlikely(afl->san_binary_length) &&
+         likely(afl->san_abstraction == SIMPLIFY_TRACE)) {
+ 
+@@ -570,26 +586,41 @@ u8 __attribute__((hot)) save_if_interesting(afl_state_t *afl, void *mem,
+ 
+       cksum_unique =
+           hash32(afl->fsrv.trace_bits, afl->fsrv.map_size, HASH_CONST);
++      if (afl->debug) {
++        fprintf(stderr, "DEBUG: UNIQUE_TRACE: san_binary_length=%d, san_abstraction=%d, cksum_unique=%u\n",
++                afl->san_binary_length, afl->san_abstraction, cksum_unique);
++      }
+       if (unlikely(!bitmap_read(afl->n_fuzz_dup, cksum) &&
+                    fault == afl->crash_mode)) {
+ 
+         feed_san = 1;
+         bitmap_set(afl->n_fuzz_dup, cksum_unique);
++        if (afl->debug) {
++          fprintf(stderr, "DEBUG: UNIQUE_TRACE: Setting feed_san=1 for unique trace\n");
++        }
+ 
+       }
+ 
+     }
+ 
+-    if (feed_san) {
+-
+-      /* The input seems interested to other sanitizers, feed it into extra
+-       * binaries. */
++    if (unlikely(afl->san_binary_length) &&
++        likely(afl->san_abstraction == ALL_TRACE)) {
++      if (afl->debug) {
++        fprintf(stderr, "DEBUG: ALL_TRACE: san_binary_length=%d, san_abstraction=%d\n", 
++                afl->san_binary_length, afl->san_abstraction);
++      }
++      feed_san = 1;
++    }
+ 
++    if (feed_san) {
++      if (afl->debug) {
++        fprintf(stderr, "DEBUG: Entering sanitizer loop, san_binary_length=%d\n", 
++                afl->san_binary_length);
++      }
+       for (san_idx = 0; san_idx < afl->san_binary_length; san_idx++) {
+-
+         len = write_to_testcase(afl, &mem, len, 0);
+         san_fault = fuzz_run_target(afl, &afl->san_fsrvs[san_idx],
+-                                    afl->san_fsrvs[san_idx].exec_tmout);
++                                  afl->san_fsrvs[san_idx].exec_tmout);
+ 
+         // DEBUGF("ASAN Result: %hhd\n", asan_fault);
+ 
+@@ -614,9 +645,7 @@ u8 __attribute__((hot)) save_if_interesting(afl_state_t *afl, void *mem,
+           san_fault = FSRV_RUN_OK;
+ 
+         }
+-
+       }
+-
+     }
+ 
+   }
+@@ -1076,5 +1105,4 @@ may_save_fault:
+ 
+   return keeping;
+ 
+-}
+-
++}
+\ No newline at end of file
+diff --git a/src/afl-fuzz.c b/src/afl-fuzz.c
+index a2718164..3bae0fa0 100644
+--- a/src/afl-fuzz.c
++++ b/src/afl-fuzz.c
+@@ -2603,6 +2603,10 @@ int main(int argc, char **argv_orig, char **envp) {
+ 
+     afl->san_abstraction = UNIQUE_TRACE;
+ 
++  } else if (!strcmp(san_abstraction, "all_trace")) {
++
++    afl->san_abstraction = ALL_TRACE;
++    
+   } else {
+ 
+     WARNF("Unknown abstraction: %s, fallback to unique trace.\n",
