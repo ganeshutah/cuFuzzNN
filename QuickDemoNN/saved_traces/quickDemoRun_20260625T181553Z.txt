@@ -1,0 +1,41 @@
+QuickDemoNN reference run — captured 2026-06-25T18:15:53Z
+==========================================================
+This trace was produced by running ./quickDemoRun.sh on the same
+host (Beast) as the earlier dizzy_2026-06-25_FIRST_SUCCESS run,
+with the same default config (Oct-2025 nixnan, SAMPLING=64, no
+whitelist, instrument all kernels).
+
+File                : quickDemoRun_20260625T181553Z.nixnan
+Size                : 67617 bytes
+Total exceptions    : 408
+Wall-time to SIGTERM: ~26 seconds
+
+Breakdown by kind:
+      224 error [-infinity]
+      184 error [subnormal]
+
+Breakdown by dtype:
+      224 of type f32
+      184 of type f16
+
+Top SASS opcodes:
+      184 instruction HMMA.16816.F32
+       64 instruction FMUL
+       64 instruction FADD
+       32 instruction MUFU.EX2
+
+Breakdown by kernel:
+      328 void pytorch_flash::flash_fwd_kernel
+       40 ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn
+       40 ampere_fp16_s16816gemm_fp16_64x64_ldg8_f2f_stages_64x6_tn
+
+Flash-attention specifically:
+  328 of 408 exception lines mention pytorch_flash::flash_fwd_kernel
+
+Of those, by exception kind:
+      224 error [-infinity]
+      104 error [subnormal]
+
+See explanationNanFiltering.md for what those flash-attention
+exceptions correspond to (line 1197 of
+csrc/flash_attn/src/flash_fwd_kernel.h in Dao-AILab/flash-attention).
