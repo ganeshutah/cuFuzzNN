@@ -1,0 +1,54 @@
+QuickDemo reference run — captured 2026-06-25
+=============================================
+
+File          : dizzy_2026-06-25_FIRST_SUCCESS.nixnan
+Size          : 107342 bytes
+Prompt        : "dizzy"
+Model         : BioMistral-7B, fp16, SDPA attention
+GPU           : NVIDIA GeForce RTX 3090, SM86 (Ampere)
+nixnan build  : Oct-2025 (pre fp-reset)
+Config        : SAMPLING=64, instrument ALL kernels (no whitelist)
+Tokens gen'd  : reached max_new_tokens=8 (terminated by SIGTERM
+                on first exception, but generation had run far
+                enough into the forward pass to surface the issue)
+
+Total FP exceptions captured : 650
+
+By kind
+-------
+  354  error [subnormal]
+  224  error [-infinity]
+   64  error [NaN]
+    8  error [NaN,subnormal]
+
+By dtype
+--------
+  362  f16   (Tensor-Core matmul operands)
+  288  f32   (accumulators + non-TC FP)
+
+Top SASS opcodes triggering
+---------------------------
+  394  HMMA.16816.F32       Ampere Tensor-Core fp16→fp32 matrix multiply-accumulate
+   64  FMUL
+   64  FADD
+   32  MUFU.EX2             transcendental (softmax exp)
+   32  FFMA
+
+Top kernels firing exceptions
+-----------------------------
+  (496 lines came from unnamed C++ templates — mostly cuDNN attention,
+   RoPE, RMSNorm, softmax; their full demangled names are in the trace)
+   40  ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn
+   40  ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x5_tn
+   40  ampere_fp16_s16816gemm_fp16_64x64_ldg8_f2f_stages_64x6_tn
+   34  ampere_fp16_s16816gemm_fp16_64x64_ldg8_f2f_stages_64x5_tn
+
+Headline
+--------
+394 of the 650 exceptions came from HMMA.16816.F32 — the canonical
+Ampere Tensor-Core fp16→fp32 matrix-multiply-accumulate instruction.
+That's the GEMM kernel cuBLAS dispatches for every Q/K/V projection,
+MLP gate/up/down, and lm_head matmul in a Mistral forward pass. The
+"subnormal" exceptions mean operands landed in the f16 subnormal
+range (between 0 and 2⁻¹⁴) — the kind of finding that motivates
+attention-tail clipping and similar numerical-stability work.
