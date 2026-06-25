@@ -1,0 +1,24 @@
+# Python deps for QuickDemo (run_query.py + analyze_trace.py).
+# Pinned loosely — exact versions used on the Beast reference run noted
+# inline. PyTorch is the only one that's sensitive to your CUDA major
+# version (12.x vs 13.x). All others are pure-Python or have wheels
+# that work across CUDA versions.
+
+# PyTorch with CUDA support — pick the wheel that matches your CUDA
+# toolkit major version. The Beast reference run used 2.6.0+cu124.
+# For CUDA 12.x toolkit:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu124
+# For CUDA 13.x toolkit:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu128
+# (left unpinned here so setup.sh can detect and install the right one)
+torch>=2.3
+
+# HuggingFace stack — model loader + tokenizer
+transformers>=4.45,<4.60         # 4.57.1 on Beast
+accelerate>=0.30                 # needed for device_map="auto"
+safetensors>=0.4                 # tokenizer.json / safetensors readers
+
+# Stdlib-y but transformers wants them
+numpy>=1.24
+sentencepiece>=0.1.99            # BioMistral tokenizer uses SentencePiece
+protobuf>=4.21                   # sentencepiece dep on some setups

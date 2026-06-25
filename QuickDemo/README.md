@@ -57,6 +57,53 @@ SAMPLING=8   ./quickdemo.sh          # finer, slower, more exceptions
 The script prints the captured trace summary at the end and tells you
 where the full trace landed (`saved_traces/<tag>.nixnan`).
 
+## Dependencies
+
+The demo needs three things "available somewhere" on the host:
+
+| dep | what | how to satisfy |
+|---|---|---|
+| **nixnan.so** | NVBit-based binary instrumenter, built into a shared object | clone `parfloat/nixnan` and `make ARCH=sm_<your-cc>`; produces `nixnan.so`. The Oct-2025 build of `main` is the reference. |
+| **BioMistral-7B checkpoint** | HuggingFace model directory (~14 GB on disk) | `huggingface-cli download BioMistral/BioMistral-7B --local-dir <DIR>` |
+| **Python with PyTorch + transformers** | venv with the packages in [`requirements.txt`](requirements.txt) | `python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt` (plus a torch wheel matching your CUDA major — see the comment in requirements.txt) |
+
+Then point the demo at them:
+
+```bash
+export NIXNAN_SO=/path/to/your/nixnan.so
+export MODEL_PATH=/path/to/biomistral-7b
+export PYTHON=/path/to/your/venv/bin/python3   # optional override
+./quickdemo.sh
+```
+
+### On Beast (the host this was developed on)
+
+Skip the setup — paths default to the working install:
+
+```
+NIXNAN_SO  = ~/repos/claude-mistral/saved-mistral/nixnan.so
+MODEL_PATH = ~/repos/claude-mistral/saved-mistral/biomistral-7b
+PYTHON     = ~/repos/claude-mistral/saved-mistral/newmed/venv/bin/python3
+NV_LIBDIR  = ~/opt/nv580.126/usr/lib/x86_64-linux-gnu  (driver-mismatch shim)
+```
+
+Just `cd QuickDemo && ./quickdemo.sh` and the defaults work.
+
+### On a fresh machine
+
+```bash
+cd QuickDemo
+./setup.sh --help          # see what's available
+./setup.sh --venv          # create .venv + install requirements (no model download)
+./setup.sh --nixnan ~/nixnan       # clone + build nixnan with ARCH matched to local GPU
+./setup.sh --model ~/biomistral-7b # download ~14 GB BioMistral-7B checkpoint
+./setup.sh --all                   # all three of the above
+```
+
+`setup.sh` prints the env-var lines to copy-paste at the end. It's
+opt-in — running it with no flags just prints a pre-flight check
+(GPU, CUDA toolkit, required CLI tools).
+
 ## Why is it built this way?
 
 Three design choices that matter for the demo:
