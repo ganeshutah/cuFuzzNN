@@ -1,0 +1,8 @@
+# Private article (kept locally by the author, not for public mirror)
+QuickDemoNN/NaNFixInContext.*
+
+# LaTeX build artefacts
+*.aux
+*.log
+*.out
+*.toc
