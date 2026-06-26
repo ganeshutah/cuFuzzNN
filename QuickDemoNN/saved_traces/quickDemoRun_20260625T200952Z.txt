@@ -1,0 +1,25 @@
+QuickDemoNN run — captured 2026-06-25T20:09:52Z
+================================================
+File             : quickDemoRun_20260625T200952Z.nixnan
+Size             : 8835 bytes
+Total exceptions : 40
+
+Breakdown by kind:
+       40 error [subnormal]
+
+Breakdown by dtype:
+       40 of type f16
+
+Top SASS opcodes:
+       40 instruction HMMA.16816.F32
+
+Breakdown by kernel:
+       40 ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn
+
+Flash-attention:
+  0 / 40 exception lines inside pytorch_flash::flash_fwd_kernel
+
+
+See explanationNanFiltering.md for the flash-attention NaN-filter
+context (line 1197 of csrc/flash_attn/src/flash_fwd_kernel.h in
+Dao-AILab/flash-attention).

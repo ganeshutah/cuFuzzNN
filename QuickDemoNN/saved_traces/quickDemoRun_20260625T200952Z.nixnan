@@ -1,0 +1,54 @@
+#nixnan: ----------------------------------------------------------------------------------
+#nixnan: Initializing GPU context...
+#nixnan: Could not open kernel_whitelist.txt!
+#nixnan: Could not open kernel_blacklist.txt!
+#nixnan: Instrumenting all kernels
+#nixnan: running kernel [void at::native::unrolled_elementwise_kernel] ...
+#nixnan: running kernel [void at::native::vectorized_elementwise_kernel] ...
+#nixnan: running kernel [void at_cuda_detail::cub::DeviceScanInitKernel] ...
+#nixnan: running kernel [void at_cuda_detail::cub::DeviceScanKernel] ...
+#nixnan: running kernel [void at::native::] ...
+#nixnan: running kernel [void at::native::reduce_kernel] ...
+#nixnan: running kernel [void gemmk1_kernel] ...
+#nixnan: running kernel [void at::native::elementwise_kernel] ...
+#nixnan: running kernel [ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn] ...
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R28, R100.reuse, R134, R28 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R0, R96.reuse, R128, R0 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 2 of instruction HMMA.16816.F32 R32, R104.reuse, R128, R32 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R32, R104.reuse, R128, R32 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 2 of instruction HMMA.16816.F32 R32, R120.reuse, R136, R32 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 2 of instruction HMMA.16816.F32 R16, R116, R136.reuse, R16 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 2 of instruction HMMA.16816.F32 R0, R96.reuse, R128, R0 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R4, R96.reuse, R130, R4 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 2 of instruction HMMA.16816.F32 R48, R108, R128, R48 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R24, R116.reuse, R140, R24 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R20, R116.reuse, R138, R20 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R16, R100, R128.reuse, R16 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R12, R112, R142.reuse, R12 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R28, R116.reuse, R142, R28 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R48, R108, R128, R48 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 2 of instruction HMMA.16816.F32 R16, R100, R128.reuse, R16 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 2 of instruction HMMA.16816.F32 R0, R112.reuse, R136, R0 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R4, R112.reuse, R138, R4 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R36, R104.reuse, R130, R36 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R36, R120.reuse, R138, R36 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R8, R96.reuse, R132, R8 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R8, R112.reuse, R140, R8 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R52, R108.reuse, R130, R52 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R52, R124.reuse, R138, R52 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R56, R108.reuse, R132, R56 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R0, R112.reuse, R136, R0 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R44, R120, R142.reuse, R44 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R60, R124.reuse, R142, R60 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R32, R120.reuse, R136, R32 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R40, R104.reuse, R132, R40 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 2 of instruction HMMA.16816.F32 R48, R124, R136, R48 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R12, R96, R134.reuse, R12 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R20, R100.reuse, R130, R20 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R24, R100.reuse, R132, R24 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R40, R120.reuse, R140, R40 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R16, R116, R136.reuse, R16 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R60, R108.reuse, R134, R60 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R44, R104, R134.reuse, R44 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R48, R124, R136, R48 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
+#nixnan: error [subnormal] detected in operand 1 of instruction HMMA.16816.F32 R56, R124.reuse, R140, R56 ; in function ampere_fp16_s16816gemm_fp16_64x64_sliced1x2_ldg8_f2f_stages_64x6_tn of type f16
